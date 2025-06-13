@@ -23,7 +23,7 @@ const swaggerOptions = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "Closed SARC BFF API",
+			title: "Closed CRAS BFF API",
 			version: "1.0.0",
 			description: "API Backend For Frontend",
 		},
@@ -43,13 +43,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/classes", checkLoggedIn, classesRoutes);
-app.use("/rooms", checkLoggedIn, roomsRoutes);
-app.use("/lessons", checkLoggedIn, lessonsRoutes);
-app.use("/resources", checkLoggedIn, resourcesRoutes);
 app.use("/courses", checkLoggedIn, coursesRoutes);
-app.use("/reservations", checkLoggedIn, reservationsRoutes);
-app.use("/students", checkLoggedIn, studentsRoutes);
+app.use("/lessons", checkLoggedIn, lessonsRoutes);
 app.use("/professors", checkLoggedIn, professorsRoutes);
+app.use("/reservations", checkLoggedIn, reservationsRoutes);
+app.use("/resources", checkLoggedIn, resourcesRoutes);
+app.use("/rooms", checkLoggedIn, roomsRoutes);
+app.use("/students", checkLoggedIn, studentsRoutes);
 
 app.get("/health", (req, res) => {
 	res.status(200).send("OK");
