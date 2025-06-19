@@ -19,7 +19,7 @@ const createServiceProxy = ({serviceName, serviceUrl}) => (createProxyMiddleware
 
 // Use the proxy middleware for any requests starting with "/classes"
 app.use("/classes", checkLoggedIn, createServiceProxy({serviceName: "classes", serviceUrl: `${process.env.CLASSES_INTERNAL_PROTOCOL}://${process.env.CLASSES_INTERNAL_HOST}:${process.env.CLASSES_INTERNAL_API_PORT}`}));
-app.use("/courses" /*checkLoggedIn*/, createServiceProxy({serviceName: "courses", serviceUrl: `${process.env.COURSES_INTERNAL_PROTOCOL}://${process.env.COURSES_INTERNAL_HOST}:${process.env.COURSES_INTERNAL_API_PORT}`}));
+app.use("/courses", checkLoggedIn, createServiceProxy({serviceName: "courses", serviceUrl: `${process.env.COURSES_INTERNAL_PROTOCOL}://${process.env.COURSES_INTERNAL_HOST}:${process.env.COURSES_INTERNAL_API_PORT}`}));
 app.use("/lessons", checkLoggedIn, createServiceProxy({serviceName: "lessons", serviceUrl: `${process.env.LESSONS_INTERNAL_PROTOCOL}://${process.env.LESSONS_INTERNAL_HOST}:${process.env.LESSONS_INTERNAL_API_PORT}`}));
 app.use("/professors", checkLoggedIn, createServiceProxy({serviceName: "professors", serviceUrl: `${process.env.PROFESSORS_INTERNAL_PROTOCOL}://${process.env.PROFESSORS_INTERNAL_HOST}:${process.env.PROFESSORS_INTERNAL_API_PORT}`}));
 app.use("/reservations", checkLoggedIn, createServiceProxy({serviceName: "reservations", serviceUrl: `${process.env.RESERVATIONS_INTERNAL_PROTOCOL}://${process.env.RESERVATIONS_INTERNAL_HOST}:${process.env.RESERVATIONS_INTERNAL_API_PORT}`}));
