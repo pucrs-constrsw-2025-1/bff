@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.BFF_INTERNAL_API_PORT;
@@ -15,8 +14,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 // Configure the proxy middleware
 const createServiceProxy = ({serviceName, serviceUrl}) => (createProxyMiddleware({
