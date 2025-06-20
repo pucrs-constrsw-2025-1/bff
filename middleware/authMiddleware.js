@@ -28,8 +28,10 @@ async function checkLoggedIn(req, res, next) {
         await axios.get(middlewareUrl, {
             headers: {
                 authorization,
-                resource,
                 method: req.method
+            },
+            params: {
+                resource: resource
             }
         });
 
