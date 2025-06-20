@@ -1,8 +1,7 @@
 /** @type {import("axios").Axios} **/
 const axios = require("axios");
 const middlewareUrl =
-    `${process.env.OAUTH_INTERNAL_PROTOCOL}://${process.env.OAUTH_INTERNAL_HOST}:${process.env.OAUTH_INTERNAL_PORT}/auth/validate-token` ||
-    `http://localhost:3000/auth/validate-token`;
+    `${process.env.OAUTH_INTERNAL_PROTOCOL}://${process.env.OAUTH_INTERNAL_HOST}:${process.env.OAUTH_INTERNAL_API_PORT}/auth/validate-token`
 const errorStatus = {
     400: "Bad request",
     401: "Not authenticated",
