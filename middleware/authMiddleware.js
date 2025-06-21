@@ -24,20 +24,19 @@ async function checkLoggedIn(req, res, next) {
     }
 
     try {
-        var resource = req.baseUrl.replace("/", "");
         await axios.get(middlewareUrl, {
             headers: {
                 authorization,
                 method: req.method
             },
             params: {
-                resource: resource
+                resource: req.url.split("/")[1]
             }
         });
 
         return next();
     } catch (error) {
-        var errorStatusCode = error.response && error.response.status ? error.response.status : 0;
+        const errorStatusCode = error.response && error.response.status ? error.response.status : 0;
         if (errorStatusCode === 403 || errorStatusCode === 401) {
             res.status(errorStatusCode).send(buildErrorResponseBody(errorStatusCode));
         } else {
