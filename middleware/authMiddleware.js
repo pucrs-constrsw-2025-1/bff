@@ -1,8 +1,7 @@
 /** @type {import("axios").Axios} **/
 const axios = require("axios");
 const middlewareUrl =
-    `${process.env.OAUTH_INTERNAL_PROTOCOL}://${process.env.OAUTH_INTERNAL_HOST}:${process.env.OAUTH_INTERNAL_PORT}/auth/validate-token` ||
-    `http://localhost:3000/auth/validate-token`;
+    `${process.env.OAUTH_INTERNAL_PROTOCOL}://${process.env.OAUTH_INTERNAL_HOST}:${process.env.OAUTH_INTERNAL_API_PORT}/auth/validate-token`
 const errorStatus = {
     400: "Bad request",
     401: "Not authenticated",
@@ -25,18 +24,19 @@ async function checkLoggedIn(req, res, next) {
     }
 
     try {
-        var resource = req.baseUrl.replace("/", "");
         await axios.get(middlewareUrl, {
             headers: {
                 authorization,
-                resource,
                 method: req.method
+            },
+            params: {
+                resource: req.url.split("/")[1]
             }
         });
 
         return next();
     } catch (error) {
-        var errorStatusCode = error.response && error.response.status ? error.response.status : 0;
+        const errorStatusCode = error.response && error.response.status ? error.response.status : 0;
         if (errorStatusCode === 403 || errorStatusCode === 401) {
             res.status(errorStatusCode).send(buildErrorResponseBody(errorStatusCode));
         } else {
