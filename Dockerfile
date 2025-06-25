@@ -1,17 +1,22 @@
-# api/Dockerfile
-FROM node:20.11.1
+# BFF Dockerfile
+FROM node:20.11.1-alpine
 
 WORKDIR /usr/src/app
 
 # Instalar curl
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl
 
-COPY package*.json ./
+# Copiar package.json primeiro
+COPY package.json ./
 
-RUN npm install
+# Instalar dependências
+RUN npm install --only=production
 
+# Copiar código da aplicação
 COPY . .
 
-EXPOSE ${BFF_INTERNAL_PORT}
+# Expor porta
+EXPOSE ${BFF_INTERNAL_API_PORT}
 
+# Comando para iniciar a aplicação
 CMD ["node", "app.js"]

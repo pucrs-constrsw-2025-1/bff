@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const actuator = require('express-actuator');
 
 const app = express();
 const port = process.env.BFF_INTERNAL_API_PORT;
@@ -34,6 +35,45 @@ app.use("/resources", checkLoggedIn, createServiceProxy({serviceName: "resources
 app.use("/rooms", checkLoggedIn, createServiceProxy({serviceName: "rooms", serviceUrl: `${process.env.ROOMS_INTERNAL_PROTOCOL}://${process.env.ROOMS_INTERNAL_HOST}:${process.env.ROOMS_INTERNAL_API_PORT}`}));
 app.use("/students", checkLoggedIn, createServiceProxy({serviceName: "students", serviceUrl: `${process.env.STUDENTS_INTERNAL_PROTOCOL}://${process.env.STUDENTS_INTERNAL_HOST}:${process.env.STUDENTS_INTERNAL_API_PORT}`}));
 
+// Configure Actuator
+const actuatorOptions = {
+    basePath: '/actuator',
+    infoGitMode: 'simple',
+    infoBuildOptions: {
+        name: 'BFF Service',
+        version: '1.0.0',
+        description: 'Backend for Frontend (BFF) Service for ConstrSW',
+        contact: {
+            name: 'ConstrSW Team'
+        }
+    },
+    customEndpoints: [
+        {
+            id: 'services',
+            controller: (req, res) => {
+                const services = {
+                    classes: `${process.env.CLASSES_INTERNAL_PROTOCOL}://${process.env.CLASSES_INTERNAL_HOST}:${process.env.CLASSES_INTERNAL_API_PORT}`,
+                    courses: `${process.env.COURSES_INTERNAL_PROTOCOL}://${process.env.COURSES_INTERNAL_HOST}:${process.env.COURSES_INTERNAL_API_PORT}`,
+                    lessons: `${process.env.LESSONS_INTERNAL_PROTOCOL}://${process.env.LESSONS_INTERNAL_HOST}:${process.env.LESSONS_INTERNAL_API_PORT}`,
+                    professors: `${process.env.PROFESSORS_INTERNAL_PROTOCOL}://${process.env.PROFESSORS_INTERNAL_HOST}:${process.env.PROFESSORS_INTERNAL_API_PORT}`,
+                    reservations: `${process.env.RESERVATIONS_INTERNAL_PROTOCOL}://${process.env.RESERVATIONS_INTERNAL_HOST}:${process.env.RESERVATIONS_INTERNAL_API_PORT}`,
+                    resources: `${process.env.RESOURCES_INTERNAL_PROTOCOL}://${process.env.RESOURCES_INTERNAL_HOST}:${process.env.RESOURCES_INTERNAL_API_PORT}`,
+                    rooms: `${process.env.ROOMS_INTERNAL_PROTOCOL}://${process.env.ROOMS_INTERNAL_HOST}:${process.env.ROOMS_INTERNAL_API_PORT}`,
+                    students: `${process.env.STUDENTS_INTERNAL_PROTOCOL}://${process.env.STUDENTS_INTERNAL_HOST}:${process.env.STUDENTS_INTERNAL_API_PORT}`
+                };
+                res.json({
+                    status: 'UP',
+                    services: services
+                });
+            }
+        }
+    ]
+};
+
+// Initialize Actuator
+app.use(actuator(actuatorOptions));
+
+// Keep the legacy health endpoint for backward compatibility
 app.get("/health", (req, res) => {
 	res.status(200).send("OK");
 });
