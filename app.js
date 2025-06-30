@@ -1,12 +1,20 @@
 const express = require("express");
 const cors = require("cors");
 const actuator = require('express-actuator');
+const promClient = require('prom-client');
 
 const app = express();
 const port = process.env.BFF_INTERNAL_API_PORT;
 
 const { checkLoggedIn } = require("./middleware/authMiddleware");
 const {createProxyMiddleware} = require("http-proxy-middleware");
+
+// Prometheus metrics
+const register = promClient.register;
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+
+// Collect default metrics
+collectDefaultMetrics({ register });
 
 // Configure middleware first
 app.use(cors({
@@ -72,6 +80,16 @@ const actuatorOptions = {
 
 // Initialize Actuator
 app.use(actuator(actuatorOptions));
+
+// Prometheus metrics endpoint
+app.get('/actuator/prometheus', async (req, res) => {
+    try {
+        res.set('Content-Type', register.contentType);
+        res.end(await register.metrics());
+    } catch (err) {
+        res.status(500).end(err);
+    }
+});
 
 // Keep the legacy health endpoint for backward compatibility
 app.get("/health", (req, res) => {
